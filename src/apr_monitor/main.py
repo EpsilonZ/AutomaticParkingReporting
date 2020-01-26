@@ -2,11 +2,13 @@ import os
 import json
 import argparse
 import time
+import socket
 from GPSReceiver import GPSReceiver
 from Position import Position
 from Ultrasonic import Ultrasonic
 from ParkingZoneWarehouse import ParkingZoneWarehouse
 from Config import Config
+from ParkingZoneDetector import ParkingZoneDetector
 
 parkingZoneWarehouse = None
 parkingZoneDetector = None
@@ -14,7 +16,7 @@ ultrasonic = Ultrasonic("JSN-SR04T", 18, 24)
 received_gps_positions = []
 in_parking_zone = 0
 
-file_parking_zone_tmp_output_file = fopen("tmp_monitor_output/last_parking_zone_data.txt",'w')
+file_parking_zone_tmp_output_file = open("tmp_monitor_output/last_parking_zone_data.txt",'w')
 
 def recvall(self,sock):
 
@@ -29,11 +31,11 @@ def recvall(self,sock):
 	return data.decode('utf-8')[:-1]
 
 def process_position_received(position):
-	
+
 	last_parking_zone_detected = parkingZoneDetector.get_last_parking_zone_detected()
 	actual_parking_zone = None
-	
-	if (last_parking_zone_detected != None and parkingZoneDetector.is_position_in_parking_zone(position, last_parking_zone_detected)):	
+
+	if (last_parking_zone_detected != None and parkingZoneDetector.is_position_in_parking_zone(position, last_parking_zone_detected)):
 		actual_parking_zone = last_parking_zone_detected
 
 	else:
@@ -86,11 +88,13 @@ def main():
 
 	parkingZoneDetector = ParkingZoneDetector(parkingZoneWarehouse)
 
-	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 	init_gps_listener = 0
-
 	point_within_parkingZone = 0
+
+	sock = socket.socket(AF_INET, socket.SOCK_STREAM)
+	sock.bind(('0.0.0.0',15000))
+	sock.listen(1)
 
 	while(True):
 

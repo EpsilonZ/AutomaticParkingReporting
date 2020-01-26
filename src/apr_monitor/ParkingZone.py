@@ -11,7 +11,7 @@ class ParkingZone:
 		self.bottomRightLimit = bottomRightLimit
 
 	def __str__(self):
-		return str(self.__class__) + ": " + str(self.__dict__)
+		return str(self.__class__) + ": " + str(self.boundingBox)
 
-	def get_bbox():
-		return boundingBox
+	def get_bbox(self):
+		return self.boundingBox

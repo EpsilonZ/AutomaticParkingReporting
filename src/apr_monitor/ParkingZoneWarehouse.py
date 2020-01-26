@@ -16,10 +16,11 @@ class ParkingZoneWarehouse:
 
 		with open(bboxes_file_path) as bboxes_file:
 
-			first = False		
+			first = False
 			for street in bboxes_file:
 				#street line in file follows this structure
 				#streetName @@@ lat1 lon1 lat2 lon2 lat3 lon3 ... latn lonn where all the lat,lon make the bounding box of the street
+
 
 				first_part_splitted = street.split("@@@")
 				street_name = first_part_splitted[0][:-1] #le quitamos el espacio del final al nombre
@@ -66,4 +67,5 @@ class ParkingZoneWarehouse:
 				#required params (parkingzoneid, boundingBox, topLeftLimit, bottomRightLimit)
 				parkingZone = ParkingZone(street_name, street_bbox, [max_lat,min_lon], [min_lat,max_lon])
 				self.parkingZonesArray.append(parkingZone)
+
 

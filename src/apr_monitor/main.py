@@ -74,7 +74,6 @@ def process_position_received(position):
 def process_ended_parking_zone():
 
 	return 0
-				
 
 def main():
 

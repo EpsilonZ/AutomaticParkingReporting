@@ -1,0 +1,4 @@
+{
+	"parking_file": "parking_data/germany/berlin/parkingberlin.osm",
+	"street_bboxes": "parking_data/spain/berlin/street_boundingboxes.txt"
+}

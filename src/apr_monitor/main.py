@@ -14,7 +14,7 @@ parkingZoneWarehouse = None
 parkingZoneDetector = None
 ultrasonic = Ultrasonic("JSN-SR04T", 18, 24)
 received_gps_positions = []
-in_parking_zone = 0
+in_new_parking_zone = 0
 
 file_parking_zone_tmp_output_file = open("tmp_monitor_output/last_parking_zone_data.txt",'w')
 
@@ -33,16 +33,19 @@ def process_position_received(position):
 
 	global parkingZoneWarehouse
 	global parkingZoneDetector
+	global in_new_parking_zone
 
 	last_parking_zone_detected = parkingZoneDetector.get_last_parking_zone_detected()
 	actual_parking_zone_detected = None
 
 	if (last_parking_zone_detected != None and parkingZoneDetector.is_position_in_parking_zone(position, last_parking_zone_detected)):
 		actual_parking_zone_detected = last_parking_zone_detected
+		in_new_parking_zone = 0
 
 	else:
 		if (parkingZoneDetector.is_position_in_any_parking_zone(position)):
 			actual_parking_zone_detected = parkingZoneDetector.get_last_parking_zone_detected()
+			in_new_parking_zone = 1
 
 
 	if(actual_parking_zone_detected == None):
@@ -50,9 +53,8 @@ def process_position_received(position):
 	#if vehicle is in parking zone
 	if(actual_parking_zone_detected != None):
 		parking_zone_tmp_output_file.write(position)
-		if(in_parking_zone):
+		if(in_new_parking_zone):
 			print ("WE ENTERED IN A PARKING ZONE!")
-			in_parking_zone = 1
 			#we get the last ultrasonic shots to clear buffer as they were not in a parking zone and not save them
 			cleannedBuffer = ultrasonic.get_ultrasonic_shots()
 		else:
@@ -63,8 +65,6 @@ def process_position_received(position):
 		  actual_parking_zone_detected != None and last_parking_zone_detected != None and actual_parking_zone_detected != last_parking_zone_deteted):
 
 		print ("OUT OF PARKING ZONE")
-
-		in_parking_zone = 0
 
 		parking_zone_tmp_output_file.write(ultrasonic.get_ultrasonic_shots())
 		parking_zone_tmp_output_file.write(position)
